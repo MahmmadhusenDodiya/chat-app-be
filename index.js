@@ -21,9 +21,15 @@ const io = new Server(server, {
 
 io.on('connection',(socket)=>{
 
-  console.log("Client Connected");
+  console.log(`Client  Connected ${socket}`);
   socket.on('chat msg',(msg)=>{
     console.log("Receieved Message "+msg);
+    // send message to itself also
+    // io.emit('chat msg',msg);
+
+    socket.broadcast.emit('chat msg',msg);
+
+
   });
 
 });
