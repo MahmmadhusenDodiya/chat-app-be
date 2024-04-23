@@ -4,7 +4,6 @@ import http from "http"
 import {Server} from "socket.io" //if we want to export many function give same name in {} of import
 
 
-
 // dotenv file loads variables from .env into process.env
 dotenv.config();
 
@@ -12,11 +11,13 @@ const app = express();
 const port = process.env.PORT || 5000; 
 
 const server=http.createServer(app);
+
+
 const io = new Server(server, {
   cors: {
       allowedHeaders: ["*"],
       origin: "*"
-    }
+        }
 });
 
 io.on('connection',(socket)=>{
@@ -40,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/DSA', (req, res) => {
-  res.send('Congratulations you are at DSA Rout !');
+  res.send('Prepare DSA for Product based companies !');
 });
 
 // Start the server
