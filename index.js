@@ -23,8 +23,18 @@ const io = new Server(server, {
 io.on('connection',(socket)=>{
 
   console.log(`Client  Connected ${socket}`);
+
+  const username=socket.handshake.query.username;
+
+  console.log("user connected name="+username);
+
   socket.on('chat msg',(msg)=>{
-    console.log("Receieved Message "+msg);
+
+    
+    console.log("sender ="+msg.sender);
+    console.log("receiever ="+msg.receiver);
+    console.log("Receieved Message "+msg.testMsg);
+
     // send message to itself also
     // io.emit('chat msg',msg);
 
