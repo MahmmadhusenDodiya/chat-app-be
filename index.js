@@ -33,7 +33,7 @@ io.on('connection',(socket)=>{
     
     console.log("sender ="+msg.sender);
     console.log("receiever ="+msg.receiver);
-    console.log("Receieved Message "+msg.testMsg);
+    console.log("Receieved Mess age "+msg.testMsg);
 
     // send message to itself also
     // io.emit('chat msg',msg);
