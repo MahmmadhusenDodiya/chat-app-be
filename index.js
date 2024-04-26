@@ -20,25 +20,36 @@ const io = new Server(server, {
         }
 });
 
+const userSocketMap={};
+
 io.on('connection',(socket)=>{
 
-  console.log(`Client  Connected ${socket}`);
+  
+  // console.log(`Client  Connected ${socket}`);
 
   const username=socket.handshake.query.username;
 
   console.log("user connected name="+username);
+  userSocketMap[username]=socket;
+
 
   socket.on('chat msg',(msg)=>{
 
     
     console.log("sender ="+msg.sender);
     console.log("receiever ="+msg.receiver);
-    console.log("Receieved Mess age "+msg.testMsg);
+    console.log("Receieved Mess age "+msg.textMsg);
 
     // send message to itself also
     // io.emit('chat msg',msg);
+    const receiverSocket=userSocketMap[msg.receiver];
 
-    socket.broadcast.emit('chat msg',msg);
+    if(receiverSocket)
+    {
+      receiverSocket.emit('chat msg',msg);
+    }
+
+    // socket.broadcast.emit('chat msg',msg);
 
 
   });
