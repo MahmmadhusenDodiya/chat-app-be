@@ -2,6 +2,10 @@ import express from "express"
 import dotenv from "dotenv"
 import http from "http"
 import {Server} from "socket.io" //if we want to export many function give same name in {} of import
+import connectToMongoDB from "./db/connectToMongo.js";
+import { addMsgToConversation } from "./controllers/msgs.controller.js";
+import router from "./routes/msgs.route.js";
+
 
 
 // dotenv file loads variables from .env into process.env
@@ -49,12 +53,21 @@ io.on('connection',(socket)=>{
       receiverSocket.emit('chat msg',msg);
     }
 
+    addMsgToConversation([msg.sender,msg.receiver],{
+      text:msg.textMsg,
+      sender:msg.sender,
+      receiver:msg.receiver
+    });
+
     // socket.broadcast.emit('chat msg',msg);
 
 
   });
 
 });
+
+app.use('/msgs',router);
+
 
 // Define a route
 app.get('/', (req, res) => {
@@ -67,5 +80,6 @@ app.get('/DSA', (req, res) => {
 
 // Start the server
 server.listen(port, () => {
+  connectToMongoDB();
   console.log(`Server is listening at http://localhost:${port}`);
 });
