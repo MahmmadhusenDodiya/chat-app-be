@@ -5,6 +5,7 @@ import {Server} from "socket.io" //if we want to export many function give same 
 import connectToMongoDB from "./db/connectToMongo.js";
 import { addMsgToConversation } from "./controllers/msgs.controller.js";
 import router from "./routes/msgs.route.js";
+import cors from "cors"
 
 
 
@@ -24,6 +25,12 @@ const io = new Server(server, {
         }
 });
 
+
+app.use(cors({
+  credentials: true,
+  origin: ["http://localhost:3000",  "http://localhost:3001",  "http://localhost:3002"]
+ }));
+
 const userSocketMap={};
 
 io.on('connection',(socket)=>{
@@ -42,7 +49,7 @@ io.on('connection',(socket)=>{
     
     console.log("sender ="+msg.sender);
     console.log("receiever ="+msg.receiver);
-    console.log("Receieved Mess age "+msg.textMsg);
+    console.log("Receieved Mess age "+msg.text);
 
     // send message to itself also
     // io.emit('chat msg',msg);
@@ -54,7 +61,7 @@ io.on('connection',(socket)=>{
     }
 
     addMsgToConversation([msg.sender,msg.receiver],{
-      text:msg.textMsg,
+      text:msg.text,
       sender:msg.sender,
       receiver:msg.receiver
     });
