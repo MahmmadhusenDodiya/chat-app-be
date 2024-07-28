@@ -1,11 +1,12 @@
 import express from "express"
 import dotenv from "dotenv"
 import http from "http"
-import {Server} from "socket.io" //if we want to export many function give same name in {} of import
+import { Server } from "socket.io" //if we want to export many function give same name in {} of import
 import connectToMongoDB from "./db/connectToMongo.js";
 import { addMsgToConversation } from "./controllers/msgs.controller.js";
 import router from "./routes/msgs.route.js";
 import cors from "cors"
+import { subscribe, publish } from "./redis/messagesPubSub.js";
 
 
 
@@ -13,57 +14,67 @@ import cors from "cors"
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8080; 
+const port = process.env.PORT || 8080;
 
-const server=http.createServer(app);
+const server = http.createServer(app);
 
 
 const io = new Server(server, {
   cors: {
-      allowedHeaders: ["*"],
-      origin: "*"
-        }
+    allowedHeaders: ["*"],
+    origin: "*"
+  }
 });
 
 
 app.use(cors({
   credentials: true,
-  origin: ["http://localhost:3000",  "http://localhost:3001",  "http://localhost:3002"]
- }));
+  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]
+}));
 
-const userSocketMap={};
+const userSocketMap = {};
 
-io.on('connection',(socket)=>{
+io.on('connection', (socket) => {
 
-  
+
   // console.log(`Client  Connected ${socket}`);
 
-  const username=socket.handshake.query.username;
-
-  console.log("user connected name="+username);
-  userSocketMap[username]=socket;
+  const username = socket.handshake.query.username;
 
 
-  socket.on('chat msg',(msg)=>{
+  const channelName = `chat_${username}`;
+  subscribe(channelName, (msg) => {
+    socket.emit("chat msg", JSON.parse(msg));
+  });
 
-    
-    console.log("sender ="+msg.sender);
-    console.log("receiever ="+msg.receiver);
-    console.log("Receieved Mess age "+msg.text);
+
+  console.log("user connected name=" + username);
+  userSocketMap[username] = socket;
+
+
+  socket.on('chat msg', (msg) => {
+
+
+    console.log("sender =" + msg.sender);
+    console.log("receiever =" + msg.receiver);
+    console.log("Receieved Mess age " + msg.text);
 
     // send message to itself also
     // io.emit('chat msg',msg);
-    const receiverSocket=userSocketMap[msg.receiver];
+    const receiverSocket = userSocketMap[msg.receiver];
 
-    if(receiverSocket)
-    {
-      receiverSocket.emit('chat msg',msg);
+    if (receiverSocket) {
+      receiverSocket.emit('chat msg', msg);
+    }else {
+      const channelName = `chat_${msg.receiver}`
+      publish(channelName, JSON.stringify(msg));
     }
+ 
 
-    addMsgToConversation([msg.sender,msg.receiver],{
-      text:msg.text,
-      sender:msg.sender,
-      receiver:msg.receiver
+    addMsgToConversation([msg.sender, msg.receiver], {
+      text: msg.text,
+      sender: msg.sender,
+      receiver: msg.receiver
     });
 
     // socket.broadcast.emit('chat msg',msg);
@@ -73,7 +84,7 @@ io.on('connection',(socket)=>{
 
 });
 
-app.use('/msgs',router);
+app.use('/msgs', router);
 
 
 // Define a route
