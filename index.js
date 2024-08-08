@@ -1,7 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import http from "http"
-import { Server } from "socket.io" //if we want to export many function give same name in {} of import
+import { Server } from "socket.io"
 import connectToMongoDB from "./db/connectToMongo.js";
 import { addMsgToConversation } from "./controllers/msgs.controller.js";
 import router from "./routes/msgs.route.js";
@@ -29,7 +29,7 @@ const io = new Server(server, {
 
 app.use(cors({
   credentials: true,
-  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]
+  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002","http://localhost:4000"]
 }));
 
 const userSocketMap = {};
@@ -65,11 +65,12 @@ io.on('connection', (socket) => {
 
     if (receiverSocket) {
       receiverSocket.emit('chat msg', msg);
-    }else {
-      const channelName = `chat_${msg.receiver}`
+    } else {
+      const channelName = `chat_${msg.receiver}`;
+      console.log("message sent to redis ="+msg+"  channelName="+channelName);
       publish(channelName, JSON.stringify(msg));
     }
- 
+
 
     addMsgToConversation([msg.sender, msg.receiver], {
       text: msg.text,

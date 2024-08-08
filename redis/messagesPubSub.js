@@ -38,30 +38,12 @@ export function subscribe(channel, callback) {
     });
 
     subscriber.on('message', (subscribedChannel, message) => {
-        console.log('Subscriber ', subscribedChannel, ' has received msg ', message);
+        console.log('Subscriber ', subscribedChannel, ' has received from redis msg ', message);
         if (subscribedChannel === channel) {
             callback(message);
         }
     });
 }
-
-
-
-
-
-
-// Function to unsubscribe from a Redis channel
-export function unsubscribe(channel) {
-    subscriber.unsubscribe(channel, (err, count) => {
-        if (err) {
-            console.error('Error unsubscribing from channel:', err);
-            return;
-        }
-        console.log(`Unsubscribed from ${channel}`);
-    });
-}
-
-
 
 
 // Function to publish a message to a Redis channel
