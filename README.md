@@ -1,12 +1,12 @@
 # Scalable Chat System
 
-## About:
+## About: (Demo video: https://youtu.be/feWuDSC9Ekc?si=tzkeBGrJsZZtGyQy)
 This project involves the high-level implementation of a chat system similar to WhatsApp. The following services have been implemented:
 
-1. **Auth Service**: Using JWT for authentication.
-2. **Frontend with Next.js**: Provides the user interface and establishes a WebSocket connection with the backend service.
-3. **Backend Service**: Receives messages from the frontend, stores messages in the database, and publishes messages to Kafka.
-4. **API Gateway**: Acts as a gateway for all APIs in the system.
+1. **Auth Service**: Using JWT for authentication. (Link : https://github.com/MahmmadhusenDodiya/auth-backend)
+2. **Frontend with Next.js**: Provides the user interface and establishes a WebSocket connection with the backend service. (Link : https://github.com/MahmmadhusenDodiya/chat-app-fe)
+3. **Backend Service**: Receives messages from the frontend, stores messages in the database, and publishes messages to Kafka. (Link : This Repo)
+4. **API Gateway**: Acts as a gateway for all APIs in the system. (Link : https://github.com/MahmmadhusenDodiya/api-gateway-chat)
 
 ## Technology Stack:
 - **Database**: MongoDB to store usernames and chats.
