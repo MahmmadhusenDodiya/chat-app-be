@@ -1,6 +1,6 @@
 # Scalable Chat System
 
-## About:
+## About: (Demo video: https://youtu.be/feWuDSC9Ekc?si=tzkeBGrJsZZtGyQy)
 This project involves the high-level implementation of a chat system similar to WhatsApp. The following services have been implemented:
 
 1. **Auth Service**: Using JWT for authentication.
